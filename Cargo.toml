@@ -1,21 +1,5 @@
-[package]
-name = "carolus"
-version = "0.1.0"
-authors = ["Simon Dickson <simon@simonhdickson.com>"]
-
-[dependencies]
-rocket = "0.3"
-rocket_codegen = "0.3"
-rocket_contrib = { version = "0.3", default-features = false, features = ["json"] }
-serde = "1.0"
-serde_derive = "1.0"
-glob = "0.2"
-regex = "0.2"
-log = "0.4"
-failure = "0.1"
-clap = "2.31"
-simple_logger = "0.5"
-lazy_static = "1.0"
-
-[features]
-tls = ["rocket/tls"]
+[workspace]
+members = [
+    "cli",
+    "web",
+]

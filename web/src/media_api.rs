@@ -1,16 +1,8 @@
-// Copyright (c) 2017 Simon Dickson
-// 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 use std::io;
-use std::path::Path;
 use std::sync::Arc;
 
+use actix_web::{http, server, App, Path, Responder};
 use failure::Error;
-use rocket::{Route, State};
-use rocket_contrib::Json;
 
 use data::{page_movies, get_movie, Movie, get_episode, page_tv_shows, TvShow};
 use partial_file::{serve_partial, PartialFile};

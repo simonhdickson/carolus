@@ -1,21 +1,17 @@
-// Copyright (c) 2017 Simon Dickson
-// 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::ffi::OsStr;
 use std::fs::read_dir;
 use std::iter::FromIterator;
 use std::path::Path;
 
-use failure::Error;
+use failure::{Error, format_err};
 use glob::glob;
+use log::{trace, warn};
+use lazy_static::lazy_static;
 
-use data::{Movie, TvShow, TvSeries, TvEpisode};
-use file_index::parse_movie;
-use file_index::parse_tv;
+use crate::data::{Movie, TvShow, TvSeries, TvEpisode};
+use crate::file_index::parse_movie;
+use crate::file_index::parse_tv;
 
 lazy_static! {
     static ref FILE_TYPES: HashSet<&'static str> = HashSet::from_iter(vec!["mp4", "mkv", "flv", "m4v", "avi"]);

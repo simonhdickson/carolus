@@ -1,0 +1,17 @@
+{{~ #*inline "page"}}
+<div class="container all-books">
+    <nav class="top-nav">
+        <img src="/static/img/bible.rs.svg" alt="BIBLE.RS" height="100" width="100" class="logo">
+    </nav>
+    <nav>
+        <ol>
+            {{~ #each books as |book|}}
+            <li>
+                <a href="/{{name}}">{{name}}</a>
+            </li>
+            {{~ /each}}
+        </ol>
+    </nav>
+</div>
+{{~ /inline}}
+{{~> base ~}}
