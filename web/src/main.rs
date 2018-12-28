@@ -128,7 +128,7 @@ fn main() -> Result<(), Error> {
         })
         .middleware(middleware::Logger::default())
     })
-    .bind("0.0.0.0:8080")
+    .bind(format!("0.0.0.0:{}", matches.value_of("movie_path").unwrap()))
     .unwrap()
     .start();
 

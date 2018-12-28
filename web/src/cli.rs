@@ -19,5 +19,10 @@ pub fn build_cli() -> App<'static, 'static> {
             .help("Sets the tv directory"))
         .arg(Arg::with_name("demo")
             .long("demo")
-            .help("Sets the tv directory"))
+            .help("Uses demo data instead of real data"))
+        .arg(Arg::with_name("port")
+            .short("p")
+            .long("port")
+            .default_value("80")
+            .help("Set port to use"))
 }
