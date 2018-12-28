@@ -8,7 +8,7 @@ use actix_web::{
 };
 use failure::Error;
 use handlebars::Handlebars;
-use log::Level;
+use log::{info, Level};
 
 use crate::controllers::{view};
 use crate::data::{DataExecutor, DataSet, Movie, TvShow, TvSeries, TvEpisode};
@@ -76,6 +76,8 @@ fn main() -> Result<(), Error> {
     } else {
          file_index::index::index(matches.value_of("movie_path"), matches.value_of("tv_path"))?
     };
+
+    info!("finished indexing files");
     
     let movies = Arc::new(movies.into_iter().map(|m|Arc::new(m)).collect::<Vec<_>>());
     let tv_shows = Arc::new(tv_shows.into_iter().map(|m|Arc::new(m)).collect::<Vec<_>>());
