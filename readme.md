@@ -8,7 +8,7 @@ Quick start:
 export CAROLUS_MOVIES_PATH="/my/movies/path"
 export CAROLUS_TV_PATH="/my/tv/path"
 cargo run &
-curl http://localhost:3000/api/movies
+curl http://localhost:8080/api/movies
 ```
 
 ## Build Docker Image
@@ -29,9 +29,3 @@ Run the following:
 export ROCKET_TLS={certs="private/ca_cert.pem",key="private/ca_key.pem"}
 cargo run --feature=tls &
 ```
-
-## License
-
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at [Mozilla MPL 2.0](http://mozilla.org/MPL/2.0/).
