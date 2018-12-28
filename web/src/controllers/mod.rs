@@ -2,8 +2,7 @@ use std::sync::Arc;
 use actix_web::HttpRequest;
 use serde_derive::Serialize;
 
-use crate::data::{Movie, TvEpisode, TvSeries, TvShow};
-use crate::error::Error;
+use data::{Movie, TvEpisode, TvSeries, TvShow, {error::Error}};
 
 pub mod view;
 

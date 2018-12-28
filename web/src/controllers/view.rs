@@ -8,9 +8,9 @@ use log::error;
 use serde::Serialize;
 use serde_derive::Serialize;
 
-use crate::data::{AllMoviesMessage, AllTvShowsMessage, MovieMessage, TvEpisodeMessage, TvSeriesMessage, TvShowMessage};
+use data::{AllMoviesMessage, AllTvShowsMessage, MovieMessage, TvEpisodeMessage, TvSeriesMessage, TvShowMessage};
 use crate::controllers::*;
-use crate::error::Error;
+use data::error::Error;
 use crate::ServerState;
 
 lazy_static! {

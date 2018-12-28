@@ -1,3 +1,5 @@
+
+
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::ffi::OsStr;
 use std::fs::read_dir;
@@ -9,12 +11,13 @@ use glob::glob;
 use log::{trace, warn};
 use lazy_static::lazy_static;
 
-use crate::data::{Movie, TvShow, TvSeries, TvEpisode};
-use crate::file_index::parse_movie;
-use crate::file_index::parse_tv;
+use data::{Movie, TvShow, TvSeries, TvEpisode};
+
+mod parse_movie;
+mod parse_tv;
 
 lazy_static! {
-    static ref FILE_TYPES: HashSet<&'static str> = HashSet::from_iter(vec!["mp4", "mkv", "flv", "m4v", "avi"]);
+    static ref FILE_TYPES: HashSet<&'static str> = HashSet::from_iter(vec!["ogg", "mp4", "m4v", "webm"]);
 }
 
 fn index_movie_directory(directory: Option<&str>) -> Result<Vec<Movie>, Error> {
@@ -97,7 +100,7 @@ fn index_tv_show(title: &str, path: &Path) -> Result<Vec<TvSeries>, Error> {
     Ok(series.into_iter().map(|(k, v)| TvSeries { series_number: k, episodes: v }).collect())
 }
 
-pub fn index(movie_directory: Option<&str>, tv_directory: Option<&str>) -> Result<(Vec<Movie>, Vec<TvShow>), Error> {
+pub fn directories(movie_directory: Option<&str>, tv_directory: Option<&str>) -> Result<(Vec<Movie>, Vec<TvShow>), Error> {
     let movies = index_movie_directory(movie_directory)?;
     let tv = index_tv_directory(tv_directory)?;
     Ok((movies, tv))

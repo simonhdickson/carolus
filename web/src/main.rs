@@ -10,14 +10,13 @@ use failure::Error;
 use handlebars::Handlebars;
 use log::{info, Level};
 
+use data::{DataExecutor, DataSet, Movie, TvShow, TvSeries, TvEpisode};
+use index;
+
 use crate::controllers::{view};
-use crate::data::{DataExecutor, DataSet, Movie, TvShow, TvSeries, TvEpisode};
 
 mod cli;
 mod controllers;
-mod data;
-mod error;
-mod file_index;
 
 pub struct ServerState {
     pub data: Addr<DataExecutor>,
@@ -74,7 +73,7 @@ fn main() -> Result<(), Error> {
     let (movies, tv_shows) = if matches.is_present("demo") {
         get_demo_data_set()
     } else {
-         file_index::index::index(matches.value_of("movie_path"), matches.value_of("tv_path"))?
+         index::directories(matches.value_of("movie_path"), matches.value_of("tv_path"))?
     };
 
     info!("finished indexing files");

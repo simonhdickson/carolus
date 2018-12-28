@@ -5,6 +5,8 @@ use serde_derive::Serialize;
 
 use crate::error::Error;
 
+pub mod error;
+
 pub struct DataSet {
     pub movies: Arc<Vec<Arc<Movie>>>,
     pub tv_shows: Arc<Vec<Arc<TvShow>>>,
