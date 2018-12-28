@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="512mm"
+   height="512mm"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg8"
+   inkscape:version=""
+   sodipodi:docname="carolus.svg"
+   inkscape:export-filename="/home/simon/code/carolus/carolus/web/dist/img/carolus-32x32.png"
+   inkscape:export-xdpi="1.5875"
+   inkscape:export-ydpi="1.5875">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="917.39562"
+     inkscape:cy="1051.4893"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="3440"
+     inkscape:window-height="1412"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,215)">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3725"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="scale(0.26458333)"><flowRegion
+         id="flowRegion3727"><rect
+           id="rect3729"
+           width="82.85714"
+           height="42.857143"
+           x="322.85715"
+           y="405.37683" /></flowRegion><flowPara
+         id="flowPara3731"></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3831"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="scale(0.26458333)"><flowRegion
+         id="flowRegion3833"><rect
+           id="rect3835"
+           width="191.42857"
+           height="154.28572"
+           x="511.42856"
+           y="342.51968" /></flowRegion><flowPara
+         id="flowPara3837"></flowPara></flowRoot>    <ellipse
+       style="fill:#ff7f2a;stroke-width:0.26458332"
+       id="path3858"
+       cx="258.15775"
+       cy="41.866093"
+       rx="252.86607"
+       ry="225.65178" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2">
+    <text
+       transform="translate(0,215)"
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:28.82532692px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.72063321"
+       x="-2.3485644"
+       y="86.091736"
+       id="text3723"><tspan
+         sodipodi:role="line"
+         id="tspan3721"
+         x="-2.3485644"
+         y="86.091736"
+         style="font-size:138.36158752px;stroke-width:0.72063321">Carolus</tspan></text>
+  </g>
+</svg>
