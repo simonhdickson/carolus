@@ -1,12 +1,14 @@
 use actix_web::*;
 use actix_web::actix::*;
-use failure::Fail;
+use failure::{self, Fail};
+use futures::future::{err, Future};
 use handlebars::Handlebars;
 use lazy_static::lazy_static;
 use log::error;
 use serde::Serialize;
 use serde_derive::Serialize;
 
+use crate::data::{AllMoviesMessage, MovieMessage};
 use crate::controllers::*;
 use crate::error::Error;
 use crate::ServerState;
@@ -64,7 +66,7 @@ impl error::ResponseError for HtmlError {
             Error::Actix { .. } | Error::Db | Error::Template => {
                 HttpResponse::InternalServerError()
             }
-            Error::BookNotFound { .. } => HttpResponse::NotFound(),
+            Error::MovieNotFound { .. } => HttpResponse::NotFound(),
             Error::InvalidReference { .. } => HttpResponse::BadRequest(),
         }
         .content_type("text/html")
@@ -80,18 +82,57 @@ impl From<MailboxError> for HtmlError {
     }
 }
 
+type AsyncResponse = Box<dyn Future<Item = HttpResponse, Error = HtmlError>>;
 
-/// Represents an empty payload of data.
-///
-/// This is used to render Handlebars templates that don't
-/// need any context to render (e.g. the About page).
 #[derive(Serialize)]
 struct EmptyPayload;
 
-/// Handles HTTP requests for the about page.
 pub fn about((state,): (State<ServerState>,)) -> Result<HttpResponse, HtmlError> {
     let body =
         TemplatePayload::new(EmptyPayload, Meta::for_about()).to_html("about", &state.template)?;
 
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
+}
+
+pub fn all_movies((state,): (State<ServerState>,)) -> AsyncResponse {
+    state
+        .data
+        .send(AllMoviesMessage)
+        .from_err()
+        .and_then(move |res| match res {
+            Ok(movies) => {
+                let body = TemplatePayload::new(AllMoviesPayload { movies }, Meta::for_all_movies())
+                    .to_html("all-movies", &state.template)?;
+
+                Ok(HttpResponse::Ok().content_type("text/html").body(body))
+            }
+            Err(e) => Err(HtmlError(e)),
+        })
+        .responder()
+}
+
+pub fn movie(req: &HttpRequest<ServerState>) -> AsyncResponse {
+    let info = Path::<(String,)>::extract(req).unwrap();
+    let data = &req.state().data;
+
+    let req = req.to_owned();
+    data.send(MovieMessage {
+        title: info.0.to_owned(),
+        year: None,
+    })
+    .from_err()
+    .and_then(move |res| match res {
+        Ok(result) => {
+            let payload = MoviePayload::new(&result, &req.drop_state());
+            let body = TemplatePayload::new(
+                &payload,
+                Meta::for_movie(&payload.movie),
+            )
+            .to_html("movie", &req.state().template)?;
+
+            Ok(HttpResponse::Ok().content_type("text/html").body(body))
+        }
+        Err(e) => Err(HtmlError(e)),
+    })
+    .responder()
 }

@@ -1,0 +1,225 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+     2.0 | 20110126
+    License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym,
+address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var,
+b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead,
+tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav,
+output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after {
+  content: '';
+  content: none; }
+
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+body {
+  margin: .5rem;
+  font-family: "Helvetica Neue", "Liberation Sans", Arial, FreeSans, sans-serif; }
+
+h1 {
+  font-size: 2rem;
+  color: #444444;
+  text-align: center;
+  margin: 1rem 0; }
+
+p {
+  margin-top: 1rem;
+  margin-bottom: 1rem; }
+
+a {
+  color: inherit;
+  text-decoration: none; }
+  a img {
+    vertical-align: middle; }
+
+ol {
+  margin: 0;
+  padding: 0;
+  text-align: center; }
+  ol > li {
+    display: inline-block;
+    list-style-type: none;
+    margin: .5rem;
+    border: 1px solid #616161;
+    text-align: center; }
+    ol > li > a {
+      color: #616161;
+      font-size: 1.25rem;
+      display: block;
+      line-height: 4rem; }
+      ol > li > a:hover {
+        background: #dddddd; }
+      ol > li > a:active {
+        background: #616161;
+        color: white; }
+
+.container {
+  max-width: 35rem;
+  margin: 2rem auto; }
+
+nav.top-nav, nav.bottom-nav {
+  text-align: center; }
+
+.heading .previous {
+  display: inline-block;
+  width: 15%;
+  text-align: left; }
+
+.heading h1 {
+  display: inline-block;
+  width: 67%;
+  text-align: center; }
+
+.heading .next {
+  display: inline-block;
+  width: 15%;
+  text-align: right; }
+
+img.logo {
+  vertical-align: middle; }
+
+footer {
+  text-align: center;
+  margin-bottom: 2rem; }
+
+.algolia-autocomplete {
+  width: 100%; }
+
+#q {
+  font-size: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  border-radius: 1px;
+  margin-top: 5px;
+  padding: 10px 16px;
+  transition: box-shadow 300ms ease-in-out;
+  box-shadow: 0 0 0 1px #dddddd, 0 0 0 2px transparent;
+  color: #616161;
+  background-color: white; }
+
+.algolia-autocomplete .aa-input {
+  font-size: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  border-radius: 1px;
+  margin-top: 5px;
+  padding: 10px 16px;
+  transition: box-shadow 300ms ease-in-out;
+  box-shadow: 0 0 0 1px #dddddd, 0 0 0 2px transparent;
+  color: #616161;
+  background-color: white; }
+  .algolia-autocomplete .aa-input:focus {
+    border-radius: 2px;
+    box-shadow: 0 0 8px #078dd8; }
+
+.algolia-autocomplete .aa-dropdown-menu {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #616161; }
+  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
+    cursor: pointer;
+    padding: .25rem; }
+    .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
+      background-color: #b2d7ff; }
+    .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
+      font-weight: bold;
+      font-style: normal; }
+
+.about {
+  color: #616161;
+  font-size: 1.1rem;
+  line-height: 1.5rem; }
+  .about h2 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem 0; }
+  .about ul {
+    padding-left: 2rem;
+    list-style: initial; }
+  .about a {
+    text-decoration: underline;
+    color: #078dd8; }
+    .about a:hover {
+      color: #616161; }
+  .about em {
+    font-style: italic; }
+
+.all-books ol > li {
+  width: 28%;
+  height: 4rem; }
+  .all-books ol > li > a {
+    font-size: 1rem; }
+
+@media screen and (max-width: 600px) {
+  .all-books ol > li {
+    width: 42%; } }
+
+.book ol > li {
+  width: 4rem;
+  height: 4rem; }
+
+.chapter article {
+  clear: both; }
+  .chapter article p {
+    color: #616161;
+    font-size: 1.1rem;
+    line-height: 1.5rem; }
+    .chapter article p:nth-child(2) {
+      margin-top: 2rem; }
+    .chapter article p:last-child {
+      margin-bottom: 2rem; }
+    .chapter article p > a {
+      font-size: .75rem; }
+    .chapter article p:target {
+      padding: .25rem;
+      background-color: #dddddd;
+      border-radius: 1px; }
+  .chapter article em {
+    font-style: italic; }
+
+.error p {
+  margin: 2rem 0;
+  font-size: 1.5rem;
+  text-align: center; }
+
+.search-results ol > li {
+  padding: .5rem;
+  text-align: left;
+  width: 100%; }
+  .search-results ol > li > a {
+    font-size: 1rem;
+    color: #444444;
+    line-height: 1; }
+
+.search-results em {
+  text-decoration: underline; }

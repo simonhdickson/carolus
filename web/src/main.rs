@@ -1,6 +1,5 @@
-use crate::data::{Movie, TvShow};
+
 use std::sync::Arc;
-use std::time::Instant;
 
 use actix_web::{
     actix::*,
@@ -14,6 +13,7 @@ use handlebars::Handlebars;
 use log::Level;
 
 use crate::controllers::{view};
+use crate::data::{DataExecutor, DataSet, Movie, TvShow};
 
 mod controllers;
 mod data;
@@ -21,8 +21,7 @@ mod error;
 mod file_index;
 
 pub struct ServerState {
-    pub movies: Arc<Vec<Movie>>,
-    pub tv_shows: Arc<Vec<TvShow>>,
+    pub data: Addr<DataExecutor>,
     pub template: Handlebars,
 }
 
@@ -37,6 +36,22 @@ fn register_templates() -> Result<Handlebars, Error> {
 
 #[derive(Default)]
 struct StaticFileConfig;
+
+impl fs::StaticFileConfig for StaticFileConfig {
+    fn is_use_etag() -> bool {
+        true
+    }
+}
+
+fn get_demo_data_set() -> (Vec<Movie>, Vec<TvShow>) {
+    (vec![
+        Movie {
+            title: "Die Hard".to_owned(),
+            year: None,
+            file_path: "./fail".to_owned(),
+        }
+    ], vec![])
+}
 
 fn main() -> Result<(), Error> {
     let matches =
@@ -56,30 +71,46 @@ fn main() -> Result<(), Error> {
                 .short("tp")
                 .env("CAROLUS_TV_PATH")
                 .help("Sets the tv directory"))
+            .arg(Arg::with_name("demo")
+                .long("demo")
+                .help("Sets the tv directory"))
             .get_matches();
 
     init_logging(matches.occurrences_of("v"))?;
 
-    let (movies, tv_shows) = file_index::index::index(matches.value_of("movie_path"), matches.value_of("tv_path"))?;
-    let movies = Arc::new(movies);
-    let tv_shows = Arc::new(tv_shows);
+    let (movies, _tv_shows) = if matches.is_present("demo") {
+        get_demo_data_set()
+    } else {
+         file_index::index::index(matches.value_of("movie_path"), matches.value_of("tv_path"))?
+    };
+    
+    let movies = Arc::new(movies.into_iter().map(|m|Arc::new(m)).collect::<Vec<_>>());
+    //let tv_shows = Arc::new(tv_shows);
     
     let sys = System::new("carolus");
+    let addr = SyncArbiter::start(num_cpus::get(), move || DataExecutor(DataSet{movies: movies.clone()}));
 
     server::new(move || {
         let template = register_templates().unwrap();
 
         App::with_state(ServerState {
-            movies: movies.clone(),
-            tv_shows: tv_shows.clone(),
+            data: addr.clone(),
             template,
         })
         .default_encoding(ContentEncoding::Gzip)
-        //.handler(
-        //    "/static",
-        //    fs::StaticFiles::with_config("./web/dist", StaticFileConfig).unwrap(),
-        //)
+        .handler(
+            "/static",
+            fs::StaticFiles::with_config("./web/dist", StaticFileConfig).unwrap(),
+        )
         .resource("about", |r| r.get().with(view::about))
+        .resource("/movies", |r| {
+            r.name("all_movies");
+            r.get().with(view::all_movies)
+        })
+        .resource("/movie/{movie}", |r| {
+            r.name("movie");
+            r.get().f(view::movie)
+        })
         .middleware(middleware::Logger::default())
     })
     .bind("0.0.0.0:8080")

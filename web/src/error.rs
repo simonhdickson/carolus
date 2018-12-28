@@ -9,8 +9,8 @@ pub enum Error {
     )]
     Actix { cause: String },
 
-    #[fail(display = "'{}' was not found.", book)]
-    BookNotFound { book: String },
+    #[fail(display = "'{}' was not found.", title)]
+    MovieNotFound { title: String },
 
     #[fail(display = "There was a database error.")]
     Db,

@@ -1,5 +1,8 @@
+use std::sync::Arc;
+use actix_web::HttpRequest;
 use serde_derive::Serialize;
 
+use crate::data::Movie;
 use crate::error::Error;
 
 pub mod view;
@@ -20,6 +23,29 @@ impl ErrorPayload {
 
     pub fn to_json(&self) -> String {
         serde_json::to_string_pretty(&self).unwrap()
+    }
+}
+
+#[derive(Serialize)]
+pub struct AllMoviesPayload {
+    movies: Arc<Vec<Arc<Movie>>>,
+}
+
+/// Represents a payload of verses (HTML or JSON).
+#[derive(Clone, Serialize, Debug)]
+pub struct MoviePayload<'a> {
+    movie: &'a Movie,
+}
+
+impl<'a> MoviePayload<'a> {
+    /// Creates a new payload for the verses page.
+    pub fn new(
+        movie: &'a Movie,
+        _req: &HttpRequest,
+    ) -> Self {
+        Self {
+            movie,
+        }
     }
 }
 
@@ -48,6 +74,22 @@ impl Meta {
             description: "About Bible.rs".to_string(),
             title: format!(title_format!(), "About"),
             url: format!(url_format!(), "/about"),
+        }
+    }
+
+    fn for_all_movies() -> Self {
+        Self {
+            description: "All Available Movies.".to_string(),
+            title: format!(title_format!(), "Movies"),
+            url: format!(url_format!(), ""),
+        }
+    }
+
+    fn for_movie(movie: &Movie) -> Self {
+        Self {
+            description: format!("The book of {}", movie.title),
+            title: format!(title_format!(), movie.title),
+            url: format!(url_format!(), format!("/movie/{}", movie.title)),
         }
     }
 

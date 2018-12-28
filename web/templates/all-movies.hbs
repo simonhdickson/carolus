@@ -1,13 +1,13 @@
 {{~ #*inline "page"}}
-<div class="container all-books">
+<div class="container all-movies">
     <nav class="top-nav">
         <img src="/static/img/bible.rs.svg" alt="BIBLE.RS" height="100" width="100" class="logo">
     </nav>
     <nav>
         <ol>
-            {{~ #each books as |book|}}
+            {{~ #each movies as |movie|}}
             <li>
-                <a href="/{{name}}">{{name}}</a>
+                <a href="/movie/{{title}}">{{title}}</a>
             </li>
             {{~ /each}}
         </ol>
