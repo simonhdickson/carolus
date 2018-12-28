@@ -47,7 +47,7 @@ fn get_demo_data_set() -> (Vec<Movie>, Vec<TvShow>) {
         Movie {
             title: "Die Hard".to_owned(),
             year: None,
-            file_path: "./fail".to_owned(),
+            file_path: "./web/dist/video/demo.mp4".to_owned(),
         }
     ], vec![
         TvShow {
@@ -58,7 +58,7 @@ fn get_demo_data_set() -> (Vec<Movie>, Vec<TvShow>) {
                 episodes: vec![
                     TvEpisode {
                         episode_number: 1,
-                        file_path: "./fail".to_owned(),
+                        file_path: "./web/dist/video/demo.mp4".to_owned(),
                     }
                 ],
             }],
@@ -104,6 +104,9 @@ fn main() -> Result<(), Error> {
             r.name("movie");
             r.get().f(view::movie)
         })
+        .resource("play/movie/{movie}", |r| {
+            r.get().f(view::play_movie)
+        })
         .resource("/tv", |r| {
             r.name("all_tv_shows");
             r.get().with(view::all_tv_shows)
@@ -119,6 +122,9 @@ fn main() -> Result<(), Error> {
         .resource("/tv/{tv_show}/{series}/{episode}", |r| {
             r.name("tv_episode");
             r.get().f(view::tv_episode)
+        })
+        .resource("/play/tv/{tv_show}/{series}/{episode}", |r| {
+            r.get().f(view::play_tv_episode)
         })
         .middleware(middleware::Logger::default())
     })

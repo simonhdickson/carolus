@@ -1,7 +1,7 @@
 use actix_web::*;
 use actix_web::actix::*;
 use failure::{self, Fail};
-use futures::future::{err, Future};
+use futures::future::Future;
 use handlebars::Handlebars;
 use lazy_static::lazy_static;
 use log::error;
@@ -82,6 +82,14 @@ impl From<MailboxError> for HtmlError {
     }
 }
 
+impl From<std::io::Error> for HtmlError {
+    fn from(e: std::io::Error) -> Self {
+        HtmlError(Error::Actix {
+            cause: e.to_string(),
+        })
+    }
+}
+
 type AsyncResponse = Box<dyn Future<Item = HttpResponse, Error = HtmlError>>;
 
 #[derive(Serialize)]
@@ -139,6 +147,24 @@ pub fn movie(req: &HttpRequest<ServerState>) -> AsyncResponse {
 
             Ok(HttpResponse::Ok().content_type("text/html").body(body))
         }
+        Err(e) => Err(HtmlError(e)),
+    })
+    .responder()
+}
+
+type AsyncFileResponse = Box<dyn Future<Item = fs::NamedFile, Error = HtmlError>>;
+
+pub fn play_movie(req: &HttpRequest<ServerState>) -> AsyncFileResponse {
+    let info = Path::<(String,)>::extract(req).unwrap();
+    let data = &req.state().data;
+
+    data.send(MovieMessage {
+        title: info.0.to_owned(),
+        year: None,
+    })
+    .from_err()
+    .and_then(move |res| match res {
+        Ok(movie) => Ok(fs::NamedFile::open(movie.file_path.to_owned())?),
         Err(e) => Err(HtmlError(e)),
     })
     .responder()
@@ -237,6 +263,24 @@ pub fn tv_episode(req: &HttpRequest<ServerState>) -> AsyncResponse {
 
             Ok(HttpResponse::Ok().content_type("text/html").body(body))
         }
+        Err(e) => Err(HtmlError(e)),
+    })
+    .responder()
+}
+
+pub fn play_tv_episode(req: &HttpRequest<ServerState>) -> AsyncFileResponse {
+    let info = Path::<(String,u16,u16)>::extract(req).unwrap();
+    let data = &req.state().data;
+
+    data.send(TvEpisodeMessage {
+        title: info.0.to_owned(),
+        year: None,
+        series: info.1,
+        episode: info.2,
+    })
+    .from_err()
+    .and_then(move |res| match res {
+        Ok((_,_,episode)) => Ok(fs::NamedFile::open(episode.file_path)?),
         Err(e) => Err(HtmlError(e)),
     })
     .responder()

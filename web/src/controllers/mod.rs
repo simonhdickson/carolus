@@ -20,10 +20,6 @@ impl ErrorPayload {
             message: e.to_string(),
         }
     }
-
-    pub fn to_json(&self) -> String {
-        serde_json::to_string_pretty(&self).unwrap()
-    }
 }
 
 #[derive(Clone, Serialize, Debug)]
