@@ -102,7 +102,8 @@ fn main() -> Result<(), Error> {
             "/static",
             fs::StaticFiles::with_config("./web/dist", StaticFileConfig).unwrap(),
         )
-        .resource("about", |r| r.get().with(view::about))
+        .resource("/", |r| r.get().with(view::home))
+        .resource("/about", |r| r.get().with(view::about))
         .resource("/movies", |r| {
             r.name("all_movies");
             r.get().with(view::all_movies)

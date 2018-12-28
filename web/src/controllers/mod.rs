@@ -69,9 +69,17 @@ macro_rules! url_format {
 }
 
 impl Meta {
+    fn for_home() -> Self {
+        Self {
+            description: "Carolus".to_string(),
+            title: format!(title_format!(), "Carolus"),
+            url: format!(url_format!(), "/"),
+        }
+    }
+
     fn for_about() -> Self {
         Self {
-            description: "About Bible.rs".to_string(),
+            description: "About Carolus".to_string(),
             title: format!(title_format!(), "About"),
             url: format!(url_format!(), "/about"),
         }

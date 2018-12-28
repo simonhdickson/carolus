@@ -87,6 +87,13 @@ type AsyncResponse = Box<dyn Future<Item = HttpResponse, Error = HtmlError>>;
 #[derive(Serialize)]
 struct EmptyPayload;
 
+pub fn home((state,): (State<ServerState>,)) -> Result<HttpResponse, HtmlError> {
+    let body =
+        TemplatePayload::new(EmptyPayload, Meta::for_home()).to_html("home", &state.template)?;
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(body))
+}
+
 pub fn about((state,): (State<ServerState>,)) -> Result<HttpResponse, HtmlError> {
     let body =
         TemplatePayload::new(EmptyPayload, Meta::for_about()).to_html("about", &state.template)?;
