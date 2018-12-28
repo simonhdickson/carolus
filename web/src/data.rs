@@ -7,6 +7,7 @@ use crate::error::Error;
 
 pub struct DataSet {
     pub movies: Arc<Vec<Arc<Movie>>>,
+    pub tv_shows: Arc<Vec<Arc<TvShow>>>,
 }
 
 pub struct DataExecutor(pub DataSet);
@@ -15,7 +16,7 @@ impl Actor for DataExecutor {
     type Context = SyncContext<Self>;
 }
 
-#[derive(PartialEq, Debug, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct Movie {
     pub title: String,
     pub year: Option<u16>,
@@ -62,43 +63,122 @@ impl Handler<MovieMessage> for DataExecutor {
     }
 }
 
-pub fn get_movie<'a>(movies: &'a Vec<Movie>, title: &str, year: Option<u16>) -> Result<&'a Movie, Error> {
-    match movies.iter().find(|m|m.title.eq_ignore_ascii_case(title) && m.year == year) {
-        None => movies.iter().find(|m|m.title.eq_ignore_ascii_case(title)),
-        movie => movie,
-    }.ok_or_else(||Error::MovieNotFound{ title: title.to_owned() })
-}
-
-#[derive(PartialEq, Debug)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct TvShow {
     pub title: String,
     pub year: Option<u16>,
     pub series: Vec<TvSeries>
 }
 
-#[derive(PartialEq, Debug)]
+pub struct AllTvShowsMessage;
+
+type AllTvShowsResult = Result<Arc<Vec<Arc<TvShow>>>, Error>;
+
+impl Message for AllTvShowsMessage {
+    type Result = AllTvShowsResult;
+}
+
+impl Handler<AllTvShowsMessage> for DataExecutor {
+    type Result = AllTvShowsResult;
+
+    fn handle(&mut self, _: AllTvShowsMessage, _: &mut Self::Context) -> Self::Result {
+        Ok(self.0.tv_shows.clone())
+    }
+}
+
+pub struct TvShowMessage {
+    pub title: String,
+    pub year: Option<u16>,
+}
+
+type TvShowResult = Result<Arc<TvShow>, Error>;
+
+impl Message for TvShowMessage {
+    type Result = TvShowResult;
+}
+
+impl Handler<TvShowMessage> for DataExecutor {
+    type Result = TvShowResult;
+
+    fn handle(&mut self, msg: TvShowMessage, _: &mut Self::Context) -> Self::Result {
+        match self.0.tv_shows.iter().find(|m|m.title.eq_ignore_ascii_case(&*msg.title) && m.year == msg.year) {
+            None => self.0.tv_shows.iter().find(|m|m.title.eq_ignore_ascii_case(&*msg.title)),
+            tv_show => tv_show,
+        }
+        .cloned()
+        .ok_or_else(||Error::TvShowNotFound{ title: msg.title })
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct TvSeries {
     pub series_number: u16,
     pub episodes: Vec<TvEpisode>
 }
 
-#[derive(PartialEq, Debug)]
+pub struct TvSeriesMessage {
+    pub title: String,
+    pub year: Option<u16>,
+    pub series: u16,
+}
+
+type TvSeriesResult = Result<(Arc<TvShow>, TvSeries), Error>;
+
+impl Message for TvSeriesMessage {
+    type Result = TvSeriesResult;
+}
+
+impl Handler<TvSeriesMessage> for DataExecutor {
+    type Result = TvSeriesResult;
+
+    fn handle(&mut self, msg: TvSeriesMessage, _: &mut Self::Context) -> Self::Result {
+        match self.0.tv_shows.iter().find(|s|s.title.eq_ignore_ascii_case(&*msg.title) && s.year == msg.year) {
+            None => self.0.tv_shows.iter().find(|s|s.title.eq_ignore_ascii_case(&*msg.title)),
+            tv_show => tv_show,
+        }
+        .and_then(|tv_show|{
+            let series = tv_show.series.iter().find(|s|s.series_number == msg.series)?;
+            Some((tv_show.clone(), series.clone()))
+        })
+        .ok_or_else(||Error::TvShowNotFound{ title: msg.title })
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct TvEpisode {
     pub episode_number: u16,
     pub file_path: String,
 }
 
-pub fn page_tv_shows<'a>(tv_shows: &'a Vec<TvShow>, page: i64, count: i64) -> Option<&'a [TvShow]> {
-    tv_shows.chunks(count as usize).skip(page as usize).next()
+pub struct TvEpisodeMessage {
+    pub title: String,
+    pub year: Option<u16>,
+    pub series: u16,
+    pub episode: u16,
 }
 
-pub fn get_episode<'a> (tv_shows: &'a Vec<TvShow>, title: &str, year: Option<u16>, series: u16, episode: u16) -> Option<(&'a TvShow, &'a TvSeries, &'a TvEpisode)> {
-    let tv_show =
-        match tv_shows.iter().find(|s|s.title.eq_ignore_ascii_case(title) && s.year == year) {
-            None => tv_shows.iter().find(|s|s.title.eq_ignore_ascii_case(title)),
+type TvEpisodeResult = Result<(Arc<TvShow>, TvSeries, TvEpisode), Error>;
+
+impl Message for TvEpisodeMessage {
+    type Result = TvEpisodeResult;
+}
+
+impl Handler<TvEpisodeMessage> for DataExecutor {
+    type Result = TvEpisodeResult;
+
+    fn handle(&mut self, msg: TvEpisodeMessage, _: &mut Self::Context) -> Self::Result {
+        match self.0.tv_shows.iter().find(|s|s.title.eq_ignore_ascii_case(&*msg.title) && s.year == msg.year) {
+            None => self.0.tv_shows.iter().find(|s|s.title.eq_ignore_ascii_case(&*msg.title)),
             tv_show => tv_show,
-        }?;
-    let series = tv_show.series.iter().find(|s|s.series_number == series)?;
-    let episode = series.episodes.iter().find(|s|s.episode_number == episode)?;
-    Some((tv_show, series, episode))
+        }
+        .and_then(|tv_show|{
+            let series = tv_show.series.iter().find(|s|s.series_number == msg.series)?;
+            Some((tv_show, series))
+        })
+        .and_then(|(tv_show, tv_series)|{
+            let tv_episode = tv_series.episodes.iter().find(|s|s.episode_number == msg.episode)?;
+            Some((tv_show.clone(), tv_series.clone(), tv_episode.clone()))
+        })
+        .ok_or_else(||Error::TvShowNotFound{ title: msg.title })
+    }
 }

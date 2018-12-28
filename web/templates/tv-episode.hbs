@@ -1,12 +1,14 @@
 {{~ #*inline "page"}}
-<div class="container movie">
+<div class="container tv-episode">
     <nav class="top-nav">
         <a href="">
             <img src="/static/img/carolus.svg" alt="Carolus" height="100" width="100" class="logo">
         </a>
     </nav>
     <div class="heading">
-        <h1>{{movie.title}}</h1>
+        <h1>{{tv_show.title}}</h1>
+        <h2>Series {{tv_series.series_number}}</h2>
+        <h3>Episode {{tv_episode.episode_number}}</h3>
         <video width="100%" controls>
             <source src="/static/video/demo.mp4" type="video/mp4">
             Your browser does not support the video tag.

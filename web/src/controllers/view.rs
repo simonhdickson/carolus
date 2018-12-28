@@ -8,7 +8,7 @@ use log::error;
 use serde::Serialize;
 use serde_derive::Serialize;
 
-use crate::data::{AllMoviesMessage, MovieMessage};
+use crate::data::{AllMoviesMessage, AllTvShowsMessage, MovieMessage, TvEpisodeMessage, TvSeriesMessage, TvShowMessage};
 use crate::controllers::*;
 use crate::error::Error;
 use crate::ServerState;
@@ -63,11 +63,11 @@ impl error::ResponseError for HtmlError {
             .unwrap();
 
         match self.0 {
-            Error::Actix { .. } | Error::Db | Error::Template => {
+            Error::Actix { .. } | Error::Template => {
                 HttpResponse::InternalServerError()
             }
             Error::MovieNotFound { .. } => HttpResponse::NotFound(),
-            Error::InvalidReference { .. } => HttpResponse::BadRequest(),
+            Error::TvShowNotFound { .. } => HttpResponse::NotFound(),
         }
         .content_type("text/html")
         .body(body)
@@ -136,6 +136,104 @@ pub fn movie(req: &HttpRequest<ServerState>) -> AsyncResponse {
                 Meta::for_movie(&payload.movie),
             )
             .to_html("movie", &req.state().template)?;
+
+            Ok(HttpResponse::Ok().content_type("text/html").body(body))
+        }
+        Err(e) => Err(HtmlError(e)),
+    })
+    .responder()
+}
+
+pub fn all_tv_shows((state,): (State<ServerState>,)) -> AsyncResponse {
+    state
+        .data
+        .send(AllTvShowsMessage)
+        .from_err()
+        .and_then(move |res| match res {
+            Ok(tv_shows) => {
+                let body = TemplatePayload::new(AllTvShowsPayload { tv_shows }, Meta::for_all_tv_shows())
+                    .to_html("all-tv-shows", &state.template)?;
+
+                Ok(HttpResponse::Ok().content_type("text/html").body(body))
+            }
+            Err(e) => Err(HtmlError(e)),
+        })
+        .responder()
+}
+
+pub fn tv_show(req: &HttpRequest<ServerState>) -> AsyncResponse {
+    let info = Path::<(String,)>::extract(req).unwrap();
+    let data = &req.state().data;
+
+    let req = req.to_owned();
+    data.send(TvShowMessage {
+        title: info.0.to_owned(),
+        year: None,
+    })
+    .from_err()
+    .and_then(move |res| match res {
+        Ok(result) => {
+            let payload = TvShowPayload::new(&result, &req.drop_state());
+            let body = TemplatePayload::new(
+                &payload,
+                Meta::for_tv_show(&payload.tv_show),
+            )
+            .to_html("tv-show", &req.state().template)?;
+
+            Ok(HttpResponse::Ok().content_type("text/html").body(body))
+        }
+        Err(e) => Err(HtmlError(e)),
+    })
+    .responder()
+}
+
+pub fn tv_series(req: &HttpRequest<ServerState>) -> AsyncResponse {
+    let info = Path::<(String,u16)>::extract(req).unwrap();
+    let data = &req.state().data;
+
+    let req = req.to_owned();
+    data.send(TvSeriesMessage {
+        title: info.0.to_owned(),
+        year: None,
+        series: info.1,
+    })
+    .from_err()
+    .and_then(move |res| match res {
+        Ok(result) => {
+            let payload = TvSeriesPayload::new(&result.0, &result.1, &req.drop_state());
+            let body = TemplatePayload::new(
+                &payload,
+                Meta::for_tv_series(&payload.tv_show, &payload.tv_series),
+            )
+            .to_html("tv-series", &req.state().template)?;
+
+            Ok(HttpResponse::Ok().content_type("text/html").body(body))
+        }
+        Err(e) => Err(HtmlError(e)),
+    })
+    .responder()
+}
+
+pub fn tv_episode(req: &HttpRequest<ServerState>) -> AsyncResponse {
+    let info = Path::<(String,u16,u16)>::extract(req).unwrap();
+    let data = &req.state().data;
+
+    let req = req.to_owned();
+    data.send(TvEpisodeMessage {
+        title: info.0.to_owned(),
+        year: None,
+        series: info.1,
+        episode: info.2,
+    })
+    .from_err()
+    .and_then(move |res| match res {
+        Ok(result) => {
+            let payload = TvEpisodePayload::new(&result.0, &result.1, &result.2, &req.drop_state());
+            let body = TemplatePayload::new(
+                &payload,
+                Meta::for_tv_episode(&payload.tv_show, &payload.tv_series, &payload.tv_episode),
+            )
+            .to_html("tv-episode", &req.state().template)?;
 
             Ok(HttpResponse::Ok().content_type("text/html").body(body))
         }

@@ -4,17 +4,16 @@ use std::sync::Arc;
 use actix_web::{
     actix::*,
     fs,
-    http::{ContentEncoding, Method, NormalizePath},
     middleware, server, App,
 };
-use clap::{Arg, App as ClapApp};
 use failure::Error;
 use handlebars::Handlebars;
 use log::Level;
 
 use crate::controllers::{view};
-use crate::data::{DataExecutor, DataSet, Movie, TvShow};
+use crate::data::{DataExecutor, DataSet, Movie, TvShow, TvSeries, TvEpisode};
 
+mod cli;
 mod controllers;
 mod data;
 mod error;
@@ -50,45 +49,39 @@ fn get_demo_data_set() -> (Vec<Movie>, Vec<TvShow>) {
             year: None,
             file_path: "./fail".to_owned(),
         }
-    ], vec![])
+    ], vec![
+        TvShow {
+            title: "Jonathan Creek".to_owned(),
+            year: None,
+            series: vec![TvSeries {
+                series_number: 1,
+                episodes: vec![
+                    TvEpisode {
+                        episode_number: 1,
+                        file_path: "./fail".to_owned(),
+                    }
+                ],
+            }],
+        }
+    ])
 }
 
 fn main() -> Result<(), Error> {
-    let matches =
-        ClapApp::new("carolus")
-            .version("0.1.0")
-            .about("Open Source Multimedia Server")
-            .author("Simon Dickson")
-            .arg(Arg::with_name("v")
-                .short("v")
-                .multiple(true)
-                .help("Sets the level of verbosity"))
-            .arg(Arg::with_name("movie_path")
-                .short("mp")
-                .env("CAROLUS_MOVIES_PATH")
-                .help("Sets the movie directory"))
-            .arg(Arg::with_name("tv_path")
-                .short("tp")
-                .env("CAROLUS_TV_PATH")
-                .help("Sets the tv directory"))
-            .arg(Arg::with_name("demo")
-                .long("demo")
-                .help("Sets the tv directory"))
-            .get_matches();
+    let matches = cli::build_cli().get_matches();
 
     init_logging(matches.occurrences_of("v"))?;
 
-    let (movies, _tv_shows) = if matches.is_present("demo") {
+    let (movies, tv_shows) = if matches.is_present("demo") {
         get_demo_data_set()
     } else {
          file_index::index::index(matches.value_of("movie_path"), matches.value_of("tv_path"))?
     };
     
     let movies = Arc::new(movies.into_iter().map(|m|Arc::new(m)).collect::<Vec<_>>());
-    //let tv_shows = Arc::new(tv_shows);
+    let tv_shows = Arc::new(tv_shows.into_iter().map(|m|Arc::new(m)).collect::<Vec<_>>());
     
     let sys = System::new("carolus");
-    let addr = SyncArbiter::start(num_cpus::get(), move || DataExecutor(DataSet{movies: movies.clone()}));
+    let addr = SyncArbiter::start(num_cpus::get(), move || DataExecutor(DataSet{movies: movies.clone(), tv_shows: tv_shows.clone()}));
 
     server::new(move || {
         let template = register_templates().unwrap();
@@ -97,7 +90,6 @@ fn main() -> Result<(), Error> {
             data: addr.clone(),
             template,
         })
-        .default_encoding(ContentEncoding::Gzip)
         .handler(
             "/static",
             fs::StaticFiles::with_config("./web/dist", StaticFileConfig).unwrap(),
@@ -111,6 +103,22 @@ fn main() -> Result<(), Error> {
         .resource("/movie/{movie}", |r| {
             r.name("movie");
             r.get().f(view::movie)
+        })
+        .resource("/tv", |r| {
+            r.name("all_tv_shows");
+            r.get().with(view::all_tv_shows)
+        })
+        .resource("/tv/{tv_show}", |r| {
+            r.name("tv_show");
+            r.get().f(view::tv_show)
+        })
+        .resource("/tv/{tv_show}/{series}", |r| {
+            r.name("tv_series");
+            r.get().f(view::tv_series)
+        })
+        .resource("/tv/{tv_show}/{series}/{episode}", |r| {
+            r.name("tv_episode");
+            r.get().f(view::tv_episode)
         })
         .middleware(middleware::Logger::default())
     })

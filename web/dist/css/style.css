@@ -174,52 +174,49 @@ footer {
   .about em {
     font-style: italic; }
 
-.all-books ol > li {
+.all-movies ol > li {
   width: 28%;
   height: 4rem; }
-  .all-books ol > li > a {
+  .all-movies ol > li > a {
     font-size: 1rem; }
 
 @media screen and (max-width: 600px) {
-  .all-books ol > li {
+  .all-movies ol > li {
     width: 42%; } }
 
-.book ol > li {
-  width: 4rem;
+.all-tv-shows ol > li {
+  width: 28%;
   height: 4rem; }
+  .all-tv-shows ol > li > a {
+    font-size: 1rem; }
 
-.chapter article {
-  clear: both; }
-  .chapter article p {
-    color: #616161;
-    font-size: 1.1rem;
-    line-height: 1.5rem; }
-    .chapter article p:nth-child(2) {
-      margin-top: 2rem; }
-    .chapter article p:last-child {
-      margin-bottom: 2rem; }
-    .chapter article p > a {
-      font-size: .75rem; }
-    .chapter article p:target {
-      padding: .25rem;
-      background-color: #dddddd;
-      border-radius: 1px; }
-  .chapter article em {
-    font-style: italic; }
+@media screen and (max-width: 600px) {
+  .all-tv-shows ol > li {
+    width: 42%; } }
 
 .error p {
   margin: 2rem 0;
   font-size: 1.5rem;
   text-align: center; }
 
-.search-results ol > li {
-  padding: .5rem;
-  text-align: left;
-  width: 100%; }
-  .search-results ol > li > a {
-    font-size: 1rem;
-    color: #444444;
-    line-height: 1; }
+.home ol > li {
+  width: 28%;
+  height: 4rem; }
+  .home ol > li > a {
+    font-size: 1rem; }
 
-.search-results em {
-  text-decoration: underline; }
+@media screen and (max-width: 600px) {
+  .home ol > li {
+    width: 42%; } }
+
+.movie ol > li {
+  width: 4rem;
+  height: 4rem; }
+
+.tv-series ol > li {
+  width: 4rem;
+  height: 4rem; }
+
+.tv-show ol > li {
+  width: 4rem;
+  height: 4rem; }

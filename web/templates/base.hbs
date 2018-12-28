@@ -7,15 +7,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{meta.title}}</title>
     <link rel="canonical" href="{{meta.url}}">
-    <link rel="shortcut icon" href="/static/img/bible.rs-32x32.png" type="image/png">
+    <link rel="shortcut icon" href="/static/img/carolus-32x32.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="manifest" href="/static/manifest.json">
 
     <meta name="theme-color" content="#444444">
-    <meta name="description" content="Browse and search the King James version of the Bible using a lightning-fast and slick interface.">
+    <meta name="description" content="Open Source Multimedia server.">
 
-    <meta property="og:site_name" content="Bible.rs">
-    <meta property="og:image" content="https://bible.rs/static/img/bible.rs-512x512.png">
+    <meta property="og:site_name" content="Carolus">
+    <meta property="og:image" content="https://carolus/static/img/carolus-512x512.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:type" content="book">
     <meta property="og:locale" content="en_US">
@@ -23,25 +23,20 @@
     <meta property="og:url" content="{{meta.url}}">
     <meta property="og:description" content="{{meta.description}}">
 
-    <link rel="apple-touch-icon" href="/static/img/bible.rs-512x512.png">
-    <meta name="apple-mobile-web-app-title" content="Bible.rs">
+    <link rel="apple-touch-icon" href="/static/img/carolus-512x512.png">
+    <meta name="apple-mobile-web-app-title" content="Carolus">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="#444444">
 </head>
 
 <body>
-    <header>
-        <form id="search-form" action="/search">
-            <input type="search" id="q" name="q" autocomplete="off" placeholder="Click or press 'S' to search..." aria-label="Search the Bible">
-        </form>
-    </header>
     <main>
     {{~> page data}}
     </main>
     <footer>
         <a href="/about" class="about-link" title="About">
             <img src="/static/img/info.svg" alt="info">
-            About Bible.rs
+            About Carolus
         </a>
     </footer>
     <script src="/static/js/autocomplete.min.js"></script>

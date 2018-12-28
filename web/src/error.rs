@@ -1,6 +1,6 @@
 use failure::Fail;
 
-/// Error type that for the Bible.rs application.
+/// Error type that for the Carolus application.
 #[derive(Fail, Debug)]
 pub enum Error {
     #[fail(
@@ -12,11 +12,8 @@ pub enum Error {
     #[fail(display = "'{}' was not found.", title)]
     MovieNotFound { title: String },
 
-    #[fail(display = "There was a database error.")]
-    Db,
-
-    #[fail(display = "'{}' is not a valid Bible reference.", reference)]
-    InvalidReference { reference: String },
+    #[fail(display = "'{}' was not found.", title)]
+    TvShowNotFound { title: String },
 
     #[fail(display = "There was an error rendering the HTML page.")]
     Template,

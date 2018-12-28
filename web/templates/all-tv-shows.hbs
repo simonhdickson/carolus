@@ -1,16 +1,15 @@
 {{~ #*inline "page"}}
-<div class="container home">
+<div class="container all-tv-shows">
     <nav class="top-nav">
         <img src="/static/img/carolus.svg" alt="Carolus" height="100" width="100" class="logo">
     </nav>
     <nav>
         <ol>
+            {{~ #each tv_shows as |tv_show|}}
             <li>
-                <a href="/movies">Movies</a>
+                <a href="/tv/{{title}}">{{title}}</a>
             </li>
-            <li>
-                <a href="/tv">Tv Shows</a>
-            </li>
+            {{~ /each}}
         </ol>
     </nav>
 </div>

@@ -2,24 +2,29 @@
 <div class="container about">
     <nav class="top-nav">
         <a href="/">
-            <img src="/static/img/bible.rs.svg" alt="BIBLE.RS" height="100" width="100" class="logo">
+            <img src="/static/img/carolus.svg" alt="Carolus" height="100" width="100" class="logo">
         </a>
     </nav>
     <article>
         <h1>About</h1>
         <p>
-            I've often found myself studying the Bible and wanting to simply "find that
-            one verse." There are numerous Bible apps and websites that are powerful,
-            full-featured, and helpful; yet I seldom need most of these features.
+            This project was mostly born of a desire to move away from using <a href="https://www.plex.tv/">Plex</a>,
+            while I've been using it for a long time I have recently become concerned about the security and piracy
+            issues surrounding it. The main goal of this project was to have a 100% offline self hosting solution
+            have with a similiar but reduced feature set to Plex.
         </p>
-        <p>
-            I also don't keep any of your personal information. There are no tracking
-            cookies or third-party analytic services involved in Carolus, it also never
-            calls home.
-        </p>
+        <h2>Main Goals of this Project</h2>
+        <ul>
+            <li>Low overhead (you should be able to run on an embedded system).</li>
+            <li>
+                No analytic services, tracking cookies or calling home of any kind (There might be third party
+                integrations in future, but this would always be opt-in).
+            </li>
+        </ul>
         <h2>Ideas for the Future</h2>
         <ul>
-            <li>Add more metadata (book author, year written, etc.).</li>
+            <li>Transcoding.</li>
+            <li>Downloading metadata from online resources</li>
         </ul>
         <h2>Contributing</h2>
         <ul>
@@ -28,6 +33,12 @@
                 <a href="https://github.com/simonhdickson/carolus">Github</a> and create a pull request.
             </li>
         </ul>
+        <h2>Inpiration</h2>
+        <p>
+            While I originally started this project over a year ago, I abandoned it quite soon after, however
+            after seeing <a href="https://github.com/DSpeckhals/bible.rs">bible.rs</a> I was inspired to revive
+            this project with a web gui front end.
+        </p>
     </article>
 </div>
 {{~ /inline}}
