@@ -7,7 +7,7 @@ use std::iter::FromIterator;
 use std::path::Path;
 
 use failure::{Error, format_err};
-use glob::glob;
+use globwalk;
 use log::{trace, warn};
 use lazy_static::lazy_static;
 
@@ -74,17 +74,14 @@ fn index_tv_directory(directory: Option<&str>) -> Result<Vec<TvShow>, Error> {
 
 fn index_tv_show(title: &str, path: &Path) -> Result<Vec<TvSeries>, Error> {
     let mut series = HashMap::new();
-    for path in glob(&format!("{}/**/*.*", path.to_str().ok_or(format_err!("expected file"))?))?.filter_map(Result::ok) {
-        if path.is_file() && !FILE_TYPES.contains(path.extension().and_then(OsStr::to_str).ok_or(format_err!("expected file 2"))?) {
-            continue
-        }
-        match parse_tv::parse_season_and_episode(&path) {
+    for file in globwalk::glob(&format!("{}/**/*.{{ogg,mp4,m4v,webm}}", path.to_str().ok_or(format_err!("expected file"))?))?.filter_map(Result::ok) {
+        match parse_tv::parse_season_and_episode(file.path()) {
             Ok((season, episode)) => {
-                trace!("Found tv episode: {}, S{:02}E{:02}, file: {:?}", title, season, episode, path);
+                trace!("Found tv episode: {}, S{:02}E{:02}, file: {:?}", title, season, episode, &file.path());
                 let episode =
                     TvEpisode {
                         episode_number: episode,
-                        file_path: path.to_str().ok_or(format_err!("should be a path"))?.to_owned()
+                        file_path: file.path().to_str().ok_or(format_err!("should be a path"))?.to_owned()
                     };
                 if !series.contains_key(&season) {
                     series.insert(season, vec![episode]);
@@ -94,7 +91,7 @@ fn index_tv_show(title: &str, path: &Path) -> Result<Vec<TvSeries>, Error> {
                     }
                 }
             },
-            Err(err) => warn!("Parse failed for {:?}, err: {}", path, err),
+            Err(err) => warn!("Parse failed for {:?}, err: {}", &file.path(), err),
         }
     }
     Ok(series.into_iter().map(|(k, v)| TvSeries { series_number: k, episodes: v }).collect())
